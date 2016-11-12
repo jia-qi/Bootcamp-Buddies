@@ -233,67 +233,6 @@ function getYelpData(item){
 
 };
 
-function getYelpCafes(centerLat, centerLon){
-
-
-    //var yelp_url = 'https://api.yelp.com/v2/search?category_filter=bars&cll=' + centerLat + ',' + centerLon;
-    var yelp_url = 'http://api.yelp.com/v2/search';
-
-    var parameters = {
-
-            oauth_consumer_key: yelpAuth.consumerKey,
-            oauth_token: yelpAuth.accessToken,
-            oauth_nonce: nonce_generate(),
-            oauth_timestamp: Math.floor(Date.now()/1000),
-            oauth_signature_method: 'HMAC-SHA1',
-            // oauth_signature: yelpAuth.accessTokenSecret,
-            callback: 'JSON_CALLBACK',
-            term: 'food',
-            location: 'Los+Angeles'  
-        };
-
-    var oauth_signature = oauthSignature.generate('GET', yelp_url, parameters, yelpAuth.consumerSecret, yelpAuth.accessTokenSecret);
-    parameters.oauth_signature = oauth_signature; 
-
-    $.ajax({
-            'url' : yelp_url,
-            'data' : parameters,
-            'dataType' : 'jsonp',
-            'jsonpCallback' : 'myCallback',
-            'cache': true
-    })
-    .done(function(data, textStatus, jqXHR) {
-        // myVM.errorMsg('');
-        console.log(data);
-        // item.reviewCount(JSON.stringify(data.review_count));
-        
-        // // removing extra quotes from image URL
-        // var image_url = JSON.stringify(data.image_url);
-        // image_url = image_url.replace(/["]+/g, '')
-        // item.imageUrl(image_url);
-
-        // // removing extra quotes from image URL
-        // var rating_url = JSON.stringify(data.rating_img_url);
-        // rating_url = rating_url.replace(/["]+/g, '')
-        // item.ratingImageUrl(rating_url);
-
-        // item.snippet(JSON.stringify(data.snippet_text));
-
-        // myVM.changeCurrentLoc(item);
-
-            for (i=0; i < data.businesses; i++){
-                data.businesses[i].location.address[0]
-            }  
-
-    })
-    .fail(function(jqXHR, textStatus, errorThrown) {
-        console.log('error[' + errorThrown + '], status[' + textStatus + '], jqXHR[' + JSON.stringify(jqXHR) + ']');
-        myVM.errorMsg('Could not load Yelp reviews');
-        myVM.changeCurrentLoc('');
-    });
-
-};
-
 function findMiddle() {
 
     var geocoder = new google.maps.Geocoder();
@@ -372,7 +311,7 @@ function findMiddle() {
             map: map
         });
 
-    getYelpCafes(bound.getCenter().lat(), bound.getCenter().lng());
+    // getYelpCafes(bound.getCenter().lat(), bound.getCenter().lng());
 
     //var yelp_url = 'https://api.yelp.com/v2/search?category_filter=bars&cll=' + centerLat + ',' + centerLon;
     var yelp_url = 'http://api.yelp.com/v2/search';
@@ -386,9 +325,10 @@ function findMiddle() {
             oauth_signature_method: 'HMAC-SHA1',
             // oauth_signature: yelpAuth.accessTokenSecret,
             callback: 'JSON_CALLBACK',
-            term: 'food',
+            term: 'cafes',
             //location: '91316'
-            ll: bound.getCenter().lat() + "," + bound.getCenter().lng()  
+            ll: bound.getCenter().lat() + "," + bound.getCenter().lng(),
+            limit: 10
         };
 
     var oauth_signature = oauthSignature.generate('GET', yelp_url, parameters, yelpAuth.consumerSecret, yelpAuth.accessTokenSecret);
