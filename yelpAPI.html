@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Yelp feature</title>
+</head>
+<body>
+<!-- Latest compiled and minified CSS & JS -->
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<!-- Link to yelp API should go here -->
+<script src="https://momentjs.com/downloads/moment.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
+<script>
+
+// firebase.initializeApp(config);
+
+// var database = firebase.database()   
+
+
+var app=angular.module("MyYelpAPI", []);
+var locationToSearch="91316";
+
+app.factory("MyYelpAPI", function($http) {
+return {
+    "retrieveYelp": function(name, callback) {
+        $http.jsonp("https://api.yelp.com/v2/search?term=cafes&location=" + locationToSearch + "&callback=JSON_CALLBACK",
+            {
+                params: {
+					oauth_consumer_key: "CYIw0EYo7t4MxnbzgeXGwA",
+					oauth_token: "FesnqFQwQ2XldfAoYdCd4KZ0WHw",
+					oauth_signature_method:	"hmac-sha1",
+					oauth_signature:	"j0NGfSG6BzIbCme1h3YByKbEPt0",
+					oauth_timestamp:	new Date().getTime(),
+					oauth_nonce: randomString(32, '12345678sdfghjkertyuilnbcse45678ikmnbvcxerio')
+                }
+            }
+        ).success(callback);
+    }
+}
+console.log(callback);
+});
+
+
+
+
+</script>
+
+</body>
+</html>
