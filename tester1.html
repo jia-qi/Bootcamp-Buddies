@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Google Maps Multiple Markers</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlhCojGn06X7_XG1SkrVf03z6DZxIgI_U" type="text/javascript"></script>
+    <!--<script src="http://maps.google.com/maps/api/js?sensor=false?key=AIzaSyDlhCojGn06X7_XG1SkrVf03z6DZxIgI_U" type="text/javascript"></script>-->
+      <!-- Added link to the jQuery Library -->
+      <script src="https://code.jquery.com/jquery-2.2.3.js" integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4=" crossorigin="anonymous"></script>
+
+      <!-- Added a link to Bootstrap-->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+
+<body>
+<div id="map" style="width: 500px; height: 400px;"></div>
+<script type="text/javascript">
+
+
+
+$(document).ready(function(){
+
+
+
+function findMiddle() {
+
+    var geocoder = new google.maps.Geocoder();
+    var firstAddress = "17059 albers street";
+    var secondAddress = "8632 longden ave";
+    var firstLatitude;
+    var firstLongitude;
+    var secondLatitude;
+    var secondLongitude;
+
+    geocoder.geocode( { 'address': firstAddress}, function(results, status) {
+
+        if (status == google.maps.GeocoderStatus.OK) {
+            firstLatitude = results[0].geometry.location.lat();
+            firstLongitude = results[0].geometry.location.lng();
+            console.log(firstLatitude);
+            console.log(firstLongitude);
+        }
+    
+
+    geocoder.geocode( { 'address': secondAddress}, function(results, status) {
+
+        if (status == google.maps.GeocoderStatus.OK) {
+            secondLatitude = results[0].geometry.location.lat();
+            secondLongitude = results[0].geometry.location.lng();
+            console.log(secondLatitude);
+            console.log(secondLongitude);
+        }
+
+
+            console.log("can I still:" + firstLatitude);
+            console.log("can I still:" + firstLongitude);
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 9,
+        center: new google.maps.LatLng(firstLatitude, firstLongitude),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    var infowindow = new google.maps.InfoWindow();
+
+    var marker, i;
+
+
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(firstLatitude, firstLongitude),
+            map: map
+        });
+
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() {
+                infowindow.setContent(firstAddress);
+                infowindow.open(map, marker);
+            }
+        })(marker, i));
+    
+
+    var bound = new google.maps.LatLngBounds();
+
+        bound.extend( new google.maps.LatLng(firstLatitude, firstLongitude) );
+        bound.extend( new google.maps.LatLng(secondLatitude, secondLongitude) );
+
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(secondLatitude, secondLongitude),
+            map: map
+        });
+
+        // OTHER CODE
+    
+
+    console.log( "the center lat is: " + bound.getCenter().lat() + " the center long is: " + bound.getCenter().lng() );
+
+
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(bound.getCenter().lat(), bound.getCenter().lng()),
+            map: map
+        });
+
+    // marker = new google.maps.Marker({
+    //     position: new google.maps.LatLng(bound.getCenter().lat(),bound.getCenter().lng()),
+    //     map: map
+    // });
+
+    });
+    });
+
+
+}
+
+findMiddle();
+
+});
+
+//    app.factory("MyYelpAPI", function($http) {
+//        return {
+//            "retrieveYelp": function(name, callback) {
+//                $http.jsonp("http://api.yelp.com/v2/search?term=cafes&location=" + locationToSearch + "&callback=JSON_CALLBACK",
+//                        {
+//                            params: {
+//                                oauth_consumer_key: /* Consumer Key */,
+//                                oauth_token: /* Token */,
+//                                oauth_signature_method: "hmac-sha1",
+//                                oauth_signature: /* Token Secret */,
+//                                oauth_timestamp: new Date().getTime(),
+//                                oauth_nonce: randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+//                            }
+//                        }
+//                ).success(callback);
+//            }
+//        }
+//    });
+
+
+</script>
+</body>
+
+</html>

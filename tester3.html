@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Yelp feature</title>
+</head>
+<body>
+<!-- Latest compiled and minified CSS & JS -->
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<!-- Link to yelp API should go here -->
+<script src="https://momentjs.com/downloads/moment.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script type="text/javascript" src="oauth.js"></script>
+    <script type="text/javascript" src="sha1.js"></script>
+    <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+
+<script>
+
+
+  var auth = { 
+    consumerKey: "CYIw0EYo7t4MxnbzgeXGwA", 
+    consumerSecret: "FesnqFQwQ2XldfAoYdCd4KZ0WHw",
+    accessToken: "9-HRKj_YfATgLgKR1piSAb7CTfMSH_QH",
+    accessTokenSecret: "j0NGfSG6BzIbCme1h3YByKbEPt0",
+  };
+
+  var terms = 'food';
+  var near = 'San+Francisco';
+
+  var accessor = {
+    consumerSecret: auth.consumerSecret,
+    tokenSecret: auth.accessTokenSecret
+  };
+
+  var parameters = [];
+  parameters.push(['term', terms]);
+  parameters.push(['location', near]);
+  parameters.push(['oauth_consumer_key', auth.consumerKey]);
+  parameters.push(['oauth_consumer_secret', auth.consumerSecret]);
+  parameters.push(['oauth_token', auth.accessToken]);
+
+  var message = { 
+    'action': 'http://api.yelp.com/v2/search',
+    'method': 'GET',
+    'parameters': parameters 
+  };
+
+  OAuth.setTimestampAndNonce(message);  
+
+  OAuth.SignatureMethod.sign(message, accessor);
+
+  var parameterMap = OAuth.getParameterMap(message.parameters);
+  parameterMap.oauth_signature = OAuth.percentEncode(parameterMap.oauth_signature)
+
+  var url = OAuth.addToURL(message.action,parameterMap);
+  var response = UrlFetchApp.fetch(url).getContentText();
+  var responseObject = Utilities.jsonParse(response);
+  //have my JSON object, do whatever we want here, like add to spreadsheets
+
+</script>
+</body>
+
+</html>
